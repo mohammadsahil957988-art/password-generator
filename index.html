@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strong Password Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f0f0; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
+        input[type="number"], button { padding: 12px; margin: 10px; font-size: 16px; width: 80%; }
+        label { display: block; margin: 15px; font-size: 18px; }
+        #password { font-size: 28px; font-weight: bold; margin: 25px; padding: 15px; background: #eef; border: 2px dashed #aaa; word-break: break-all; }
+        #strength { font-size: 24px; font-weight: bold; margin: 20px; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; border-radius: 8px; width: 80%; }
+        button:hover { background: #0056b3; }
+        .copy-btn { background: #28a745; }
+        .copy-btn:hover { background: #218838; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Strong Password Generator</h1>
+        <p>Custom options से स्ट्रॉंग पासवर्ड बनाओ!</p>
+        
+        <label>Password Length: <input type="number" id="length" value="16" min="8" max="50"></label>
+        
+        <label><input type="checkbox" id="uppercase" checked> Uppercase Letters (A-Z)</label>
+        <label><input type="checkbox" id="lowercase" checked> Lowercase Letters (a-z)</label>
+        <label><input type="checkbox" id="numbers" checked> Numbers (0-9)</label>
+        <label><input type="checkbox" id="symbols" checked> Symbols (!@#$%^&* आदि)</label>
+        
+        <button onclick="generate()">Generate Password</button>
+        
+        <div id="password">Click Generate!</div>
+        <div id="strength"></div>
+        
+        <button class="copy-btn" onclick="copy()">Copy Password</button>
+    </div>
+
+    <script>
+        function generate() {
+            const length = parseInt(document.getElementById('length').value);
+            let chars = '';
+            if (document.getElementById('lowercase').checked) chars += 'abcdefghijklmnopqrstuvwxyz';
+            if (document.getElementById('uppercase').checked) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (document.getElementById('numbers').checked) chars += '0123456789';
+            if (document.getElementById('symbols').checked) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            if (chars === '') {
+                document.getElementById('password').innerText = 'कम से कम एक ऑप्शन चुनो!';
+                document.getElementById('strength').innerText = '';
+                return;
+            }
+            
+            let pass = '';
+            for (let i = 0; i < length; i++) {
+                pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            document.getElementById('password').innerText = pass;
+            
+            // Strength Checker
+            let score = 0;
+            if (document.getElementById('lowercase').checked) score += 1;
+            if (document.getElementById('uppercase').checked) score += 1;
+            if (document.getElementById('numbers').checked) score += 1;
+            if (document.getElementById('symbols').checked) score += 2;
+            if (length >= 12) score += 2;
+            if (length >= 16) score += 2;
+            if (length >= 20) score += 1;
+            
+            let strengthText = '';
+            let strengthColor = '';
+            if (score >= 😎 { strengthText = 'Very Strong'; strengthColor = 'darkgreen'; }
+            else if (score >= 6) { strengthText = 'Strong'; strengthColor = 'green'; }
+            else if (score >= 4) { strengthText = 'Medium'; strengthColor = 'orange'; }
+            else { strengthText = 'Weak'; strengthColor = 'red'; }
+            
+            document.getElementById('strength').innerText = 'Strength: ' + strengthText;
+            document.getElementById('strength').style.color = strengthColor;
+        }
+        
+        function copy() {
+            const pass = document.getElementById('password').innerText;
+            if (pass && pass !== 'Click Generate!' && pass !== 'कम से कम एक ऑप्शन चुनो!') {
+                navigator.clipboard.writeText(pass);
+                alert('Password Copied!');
+            }
+        }
+    </script>
+</body>
+</html> 
