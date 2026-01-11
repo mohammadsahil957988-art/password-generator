@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
     <title>Secure Gen Pro</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
+    
     <style>
         :root {
             --primary: #6366f1;
             --bg: #0f172a;
             --card: #1e293b;
             --text: #f8fafc;
-            --success: #22c55e;
-            --warning: #eab308;
-            --danger: #ef4444;
+            --gray: #334155;
         }
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -24,148 +23,187 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
         }
         .card {
             background: var(--card);
             padding: 2rem;
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             border: 1px solid rgba(255,255,255,0.1);
-            position: relative;
+            transition: height 0.3s ease;
         }
-        h2 { text-align: center; margin: 0 0 1.5rem 0; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* Generator UI */
+        /* --- TABS (नया डिजाइन) --- */
+        .tab-container {
+            display: flex;
+            background: var(--gray);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 25px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.3s;
+            font-size: 0.95rem;
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        /* --- CONTENT SECTIONS --- */
+        .content-section { display: none; animation: fadeIn 0.4s; }
+        .content-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Generator Styles */
         .display-box {
-            background: rgba(15, 23, 42, 0.6);
-            padding: 1rem;
-            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
             border: 1px solid #475569;
         }
-        #result { font-family: 'Courier New', monospace; font-size: 1.3rem; letter-spacing: 1px; color: #38bdf8; word-break: break-all; }
-        .icon-btn { background: none; border: none; cursor: pointer; color: #94a3b8; transition: 0.2s; padding: 5px; }
-        .icon-btn:hover { color: white; transform: scale(1.1); }
-
-        .settings { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
-        .row { display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem; }
+        #result { font-family: monospace; font-size: 1.3rem; color: #38bdf8; word-break: break-all; }
         
-        input[type="range"] { width: 100%; margin-top: 8px; accent-color: var(--primary); cursor: pointer; }
-        input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+        .settings .row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; }
+        input[type="range"] { width: 100%; accent-color: var(--primary); margin-top: 8px; }
         
         .btn-main {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            transition: 0.3s;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            background: var(--primary); color: white; border: none; padding: 14px;
+            border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer;
+            margin-top: 10px; transition: 0.2s; font-size: 1rem;
         }
         .btn-main:hover { background: #4f46e5; transform: translateY(-2px); }
 
-        /* Checker UI */
-        .divider { margin: 2rem 0; border: 0; border-top: 1px dashed #475569; }
-        
-        .input-wrapper { position: relative; margin-bottom: 15px; }
+        /* Checker Styles */
+        .checker-input-box { position: relative; margin-top: 10px; }
         .pass-input {
-            width: 100%; padding: 14px; padding-right: 45px;
-            border-radius: 10px; background: rgba(15, 23, 42, 0.6);
-            border: 1px solid #475569; color: white; font-size: 1rem;
-            box-sizing: border-box; outline: none;
+            width: 100%; padding: 15px; padding-right: 45px;
+            border-radius: 12px; background: rgba(15, 23, 42, 0.8);
+            border: 2px solid #475569; color: white; font-size: 1.1rem;
+            box-sizing: border-box; outline: none; transition: 0.3s;
         }
         .pass-input:focus { border-color: var(--primary); }
-        .eye-icon {
-            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-            cursor: pointer; color: #94a3b8;
-        }
-        .meter-bg { height: 6px; background: #334155; border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
-        #strength-fill { height: 100%; width: 0%; transition: 0.4s; background: var(--danger); }
-        .feedback { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; }
         
-        /* Toast Notification (New) */
-        #toast {
-            visibility: hidden;
-            min-width: 200px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 50px;
-            padding: 12px;
-            position: fixed;
-            z-index: 1;
-            bottom: 30px;
-            font-size: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        #toast.show { visibility: visible; -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        .eye-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94a3b8; }
         
+        .meter-container { margin-top: 20px; }
+        .meter-bg { height: 8px; background: #334155; border-radius: 4px; overflow: hidden; }
+        #strength-fill { height: 100%; width: 0%; transition: 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); background: transparent; }
+        
+        .status-area { margin-top: 15px; text-align: center; }
+        #status-emoji { font-size: 2rem; display: block; margin-bottom: 5px; }
+        #status-text { font-size: 1.1rem; font-weight: bold; }
+        #crack-time { font-size: 0.85rem; color: #94a3b8; margin-top: 5px; display: block; }
+
+        /* Toast */
+        #toast { visibility: hidden; min-width: 200px; background: #333; color: #fff; text-align: center; border-radius: 50px; padding: 10px; position: fixed; bottom: 30px; z-index: 10; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
         @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>🔐 Secure Gen</h2>
-    
-    <div class="display-box">
-        <span id="result">Generating...</span>
-        <button class="icon-btn" onclick="copyPass()" title="Copy">
-            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-        </button>
+    <div class="tab-container">
+        <button class="tab-btn active" onclick="openTab('generator')">🔑 पासवर्ड बनाएँ</button>
+        <button class="tab-btn" onclick="openTab('checker')">🛡️ मजबूती चेक करें</button>
     </div>
 
-    <div class="settings">
-        <div>
-            <div class="row"><span>Length</span> <span id="lenVal" style="color:var(--primary); font-weight:bold;">12</span></div>
-            <input type="range" id="len" min="6" max="32" value="12" oninput="document.getElementById('lenVal').innerText = this.value">
+    <div id="generator" class="content-section active">
+        <div class="display-box">
+            <span id="result">...</span>
+            <button style="background:none; border:none; cursor:pointer; color:#94a3b8;" onclick="copyPass()">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
         </div>
-        <div class="row"><span>Uppercase (A-Z)</span> <input type="checkbox" id="up" checked></div>
-        <div class="row"><span>Numbers (0-9)</span> <input type="checkbox" id="num" checked></div>
-        <div class="row"><span>Symbols (!@#)</span> <input type="checkbox" id="sym" checked></div>
-    </div>
 
-    <button class="btn-main" onclick="generatePass()">नया पासवर्ड बनाएँ</button>
-
-    <hr class="divider">
-    <h3 style="margin: 0 0 10px 0; font-size: 1.1rem; color: #e2e8f0;">🛡️ पासवर्ड टेस्ट करें</h3>
-    
-    <div class="input-wrapper">
-        <input type="password" id="checkInput" class="pass-input" placeholder="यहाँ पासवर्ड डालें..." oninput="checkStrength()">
-        <div class="eye-icon" onclick="toggleView()">
-            <svg id="eyeSvg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        <div class="settings">
+            <div class="row">
+                <span>लंबाई (Length): <span id="lenVal" style="color:var(--primary); font-weight:bold;">12</span></span>
+            </div>
+            <input type="range" id="len" min="6" max="30" value="12" oninput="updateGen()">
+            
+            <div class="row" style="margin-top:15px;"><span>Uppercase (A-Z)</span> <input type="checkbox" id="up" checked onclick="updateGen()"></div>
+            <div class="row"><span>Numbers (0-9)</span> <input type="checkbox" id="num" checked onclick="updateGen()"></div>
+            <div class="row"><span>Symbols (!@#)</span> <input type="checkbox" id="sym" checked onclick="updateGen()"></div>
         </div>
+
+        <button class="btn-main" onclick="generatePass()">नया रिफ्रेश करें 🔄</button>
     </div>
 
-    <div class="meter-bg"><div id="strength-fill"></div></div>
-    
-    <div class="feedback">
-        <span id="status-text" style="color: #94a3b8;">टाइप करें...</span>
-        <span id="crack-time" style="color: #94a3b8; font-weight: normal;"></span>
+    <div id="checker" class="content-section">
+        <h3 style="text-align:center; color:#cbd5e1; margin-top:0;">पासवर्ड कितना सुरक्षित है?</h3>
+        
+        <div class="checker-input-box">
+            <input type="text" id="checkInput" class="pass-input" placeholder="पासवर्ड यहाँ पेस्ट करें..." oninput="checkStrength()">
+            <div class="eye-icon" onclick="toggleView()">
+                <svg id="eyeSvg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </div>
+        </div>
+
+        <div class="meter-container">
+            <div class="meter-bg"><div id="strength-fill"></div></div>
+        </div>
+
+        <div class="status-area">
+            <span id="status-emoji">👇</span>
+            <div id="status-text" style="color:#94a3b8;">टाइप करना शुरू करें...</div>
+            <span id="crack-time"></span>
+        </div>
     </div>
 </div>
 
-<div id="toast">पासवर्ड कॉपी हो गया! ✅</div>
+<div id="toast">✅ कॉपी हो गया!</div>
 
 <script>
-    // --- Generator Logic ---
-    const chars = { upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ", lower: "abcdefghijklmnopqrstuvwxyz", num: "0123456789", sym: "!@#$%^&*()_+~`|}{[]:;?><,./-=" };
+    // --- TABS LOGIC ---
+    function openTab(tabName) {
+        // Hide all sections
+        document.getElementById('generator').classList.remove('active');
+        document.getElementById('checker').classList.remove('active');
+        
+        // Reset buttons
+        let buttons = document.getElementsByClassName('tab-btn');
+        buttons[0].classList.remove('active');
+        buttons[1].classList.remove('active');
+
+        // Show selected
+        document.getElementById(tabName).classList.add('active');
+        
+        // Highlight button
+        if(tabName === 'generator') buttons[0].classList.add('active');
+        else buttons[1].classList.add('active');
+    }
+
+    // --- GENERATOR LOGIC ---
+    const chars = { upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ", lower: "abcdefghijklmnopqrstuvwxyz", num: "0123456789", sym: "!@#$%^&*()_+" };
+
+    function updateGen() {
+        document.getElementById('lenVal').innerText = document.getElementById('len').value;
+    }
 
     function generatePass() {
         let length = document.getElementById('len').value;
-        let pool = chars.lower; 
+        let pool = chars.lower;
         if(document.getElementById('up').checked) pool += chars.upper;
         if(document.getElementById('num').checked) pool += chars.num;
         if(document.getElementById('sym').checked) pool += chars.sym;
@@ -179,37 +217,33 @@
 
     function copyPass() {
         navigator.clipboard.writeText(document.getElementById('result').innerText);
-        showToast();
-    }
-
-    function showToast() {
-        var x = document.getElementById("toast");
+        let x = document.getElementById("toast");
         x.className = "show";
-        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        setTimeout(() => { x.className = x.className.replace("show", ""); }, 3000);
     }
 
-    // --- Checker Logic ---
+    // --- CHECKER LOGIC ---
     function toggleView() {
         let inp = document.getElementById('checkInput');
         let eye = document.getElementById('eyeSvg');
-        if (inp.type === "password") {
-            inp.type = "text";
-            eye.style.color = "#6366f1";
+        if (inp.type === "text") {
+            inp.type = "password"; eye.style.color = "#475569";
         } else {
-            inp.type = "password";
-            eye.style.color = "#94a3b8";
+            inp.type = "text"; eye.style.color = "#6366f1";
         }
     }
 
     function checkStrength() {
         let val = document.getElementById('checkInput').value;
         let fill = document.getElementById('strength-fill');
-        let status = document.getElementById('status-text');
+        let text = document.getElementById('status-text');
         let time = document.getElementById('crack-time');
+        let emoji = document.getElementById('status-emoji');
 
         if(!val) {
             fill.style.width = "0%";
-            status.innerText = "टाइप करें..."; status.style.color = "#94a3b8"; time.innerText = "";
+            text.innerText = "टाइप करना शुरू करें..."; text.style.color = "#94a3b8";
+            time.innerText = ""; emoji.innerText = "👇";
             return;
         }
 
@@ -222,20 +256,20 @@
 
         if(score < 2) {
             fill.style.width = "30%"; fill.style.background = "#ef4444";
-            status.innerText = "कमजोर 😟"; status.style.color = "#ef4444";
-            time.innerText = "तुरंत हैक होगा";
+            text.innerText = "कमजोर (Weak)"; text.style.color = "#ef4444";
+            time.innerText = "तुरंत हैक हो सकता है"; emoji.innerText = "😱";
         } else if (score < 4) {
             fill.style.width = "60%"; fill.style.background = "#eab308";
-            status.innerText = "ठीक-ठाक 😐"; status.style.color = "#eab308";
-            time.innerText = "हैक में 2-3 दिन";
+            text.innerText = "ठीक-ठाक (Medium)"; text.style.color = "#eab308";
+            time.innerText = "हैक करने में कुछ दिन लगेंगे"; emoji.innerText = "😐";
         } else {
             fill.style.width = "100%"; fill.style.background = "#22c55e";
-            status.innerText = "बहुत मजबूत 💪"; status.style.color = "#22c55e";
-            time.innerText = "400+ साल सुरक्षित";
+            text.innerText = "शानदार (Strong)"; text.style.color = "#22c55e";
+            time.innerText = "हैक करने में 400+ साल लगेंगे"; emoji.innerText = "😎";
         }
     }
-    
-    generatePass(); // Load initial password
+
+    window.onload = generatePass;
 </script>
 
 </body>
