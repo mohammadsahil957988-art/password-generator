@@ -1,92 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strong Password Generator</title>
+    <title>Premium Password Generator</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f0f0; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
-        input[type="number"], button { padding: 12px; margin: 10px; font-size: 16px; width: 80%; }
-        label { display: block; margin: 15px; font-size: 18px; }
-        #password { font-size: 28px; font-weight: bold; margin: 25px; padding: 15px; background: #eef; border: 2px dashed #aaa; word-break: break-all; }
-        #strength { font-size: 24px; font-weight: bold; margin: 20px; }
-        button { background: #007bff; color: white; border: none; cursor: pointer; border-radius: 8px; width: 80%; }
-        button:hover { background: #0056b3; }
-        .copy-btn { background: #28a745; }
-        .copy-btn:hover { background: #218838; }
+        :root {
+            --primary: #6366f1;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        h2 { text-align: center; margin-bottom: 1.5rem; font-weight: 700; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .display-area {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border: 1px solid #334155;
+        }
+        #result { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; word-break: break-all; color: #38bdf8; }
+        
+        .copy-btn { background: none; border: none; cursor: pointer; color: #94a3b8; transition: 0.3s; }
+        .copy-btn:hover { color: white; transform: scale(1.1); }
+
+        .settings { display: flex; flex-direction: column; gap: 12px; }
+        .option { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+        
+        input[type="range"] { width: 100%; margin-top: 10px; accent-color: var(--primary); }
+        
+        .generate-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transition: 0.3s;
+        }
+        .generate-btn:hover { background: #4f46e5; transform: translateY(-2px); }
+        
+        input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🔐 Strong Password Generator</h1>
-        <p>Custom options से स्ट्रॉंग पासवर्ड बनाओ!</p>
-        
-        <label>Password Length: <input type="number" id="length" value="16" min="8" max="50"></label>
-        
-        <label><input type="checkbox" id="uppercase" checked> Uppercase Letters (A-Z)</label>
-        <label><input type="checkbox" id="lowercase" checked> Lowercase Letters (a-z)</label>
-        <label><input type="checkbox" id="numbers" checked> Numbers (0-9)</label>
-        <label><input type="checkbox" id="symbols" checked> Symbols (!@#$%^&* आदि)</label>
-        
-        <button onclick="generate()">Generate Password</button>
-        
-        <div id="password">Click Generate!</div>
-        <div id="strength"></div>
-        
-        <button class="copy-btn" onclick="copy()">Copy Password</button>
+
+<div class="card">
+    <h2>🔐 Secure Gen</h2>
+    
+    <div class="display-area">
+        <span id="result">P@ssw0rd123!</span>
+        <button class="copy-btn" onclick="copyPassword()" title="Copy Code">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </button>
     </div>
 
-    <script>
-        function generate() {
-            const length = parseInt(document.getElementById('length').value);
-            let chars = '';
-            if (document.getElementById('lowercase').checked) chars += 'abcdefghijklmnopqrstuvwxyz';
-            if (document.getElementById('uppercase').checked) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            if (document.getElementById('numbers').checked) chars += '0123456789';
-            if (document.getElementById('symbols').checked) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
-            
-            if (chars === '') {
-                document.getElementById('password').innerText = 'कम से कम एक ऑप्शन चुनो!';
-                document.getElementById('strength').innerText = '';
-                return;
-            }
-            
-            let pass = '';
-            for (let i = 0; i < length; i++) {
-                pass += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            
-            document.getElementById('password').innerText = pass;
-            
-            // Strength Checker
-            let score = 0;
-            if (document.getElementById('lowercase').checked) score += 1;
-            if (document.getElementById('uppercase').checked) score += 1;
-            if (document.getElementById('numbers').checked) score += 1;
-            if (document.getElementById('symbols').checked) score += 2;
-            if (length >= 12) score += 2;
-            if (length >= 16) score += 2;
-            if (length >= 20) score += 1;
-            
-            let strengthText = '';
-            let strengthColor = '';
-            if (score >= 😎 { strengthText = 'Very Strong'; strengthColor = 'darkgreen'; }
-            else if (score >= 6) { strengthText = 'Strong'; strengthColor = 'green'; }
-            else if (score >= 4) { strengthText = 'Medium'; strengthColor = 'orange'; }
-            else { strengthText = 'Weak'; strengthColor = 'red'; }
-            
-            document.getElementById('strength').innerText = 'Strength: ' + strengthText;
-            document.getElementById('strength').style.color = strengthColor;
+    <div class="settings">
+        <div class="length-setting">
+            <div class="option">
+                <span>लंबाई (Length)</span>
+                <span id="lengthVal" style="color: var(--primary); font-weight: bold;">12</span>
+            </div>
+            <input type="range" id="length" min="6" max="30" value="12" oninput="document.getElementById('lengthVal').innerText = this.value">
+        </div>
+
+        <div class="option"><span>Uppercase (A-Z)</span><input type="checkbox" id="upper" checked></div>
+        <div class="option"><span>Lowercase (a-z)</span><input type="checkbox" id="lower" checked></div>
+        <div class="option"><span>Numbers (0-9)</span><input type="checkbox" id="numbers" checked></div>
+        <div class="option"><span>Symbols (@#£%&*)</span><input type="checkbox" id="symbols" checked></div>
+    </div>
+
+    <button class="generate-btn" onclick="generate()">नया पासवर्ड बनाएँ</button>
+</div>
+
+<script>
+    function generate() {
+        const length = document.getElementById('length').value;
+        const sets = {
+            upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+            lower: "abcdefghijklmnopqrstuvwxyz",
+            numbers: "0123456789",
+            symbols: "@#£_&-+()/?%*':;!?"
+        };
+
+        let charPool = "";
+        if(document.getElementById('upper').checked) charPool += sets.upper;
+        if(document.getElementById('lower').checked) charPool += sets.lower;
+        if(document.getElementById('numbers').checked) charPool += sets.numbers;
+        if(document.getElementById('symbols').checked) charPool += sets.symbols;
+
+        if(!charPool) return alert("कम से कम एक ऑप्शन चुनें!");
+
+        let password = "";
+        for(let i=0; i<length; i++) {
+            password += charPool.charAt(Math.floor(Math.random() * charPool.length));
         }
-        
-        function copy() {
-            const pass = document.getElementById('password').innerText;
-            if (pass && pass !== 'Click Generate!' && pass !== 'कम से कम एक ऑप्शन चुनो!') {
-                navigator.clipboard.writeText(pass);
-                alert('Password Copied!');
-            }
-        }
-    </script>
+        document.getElementById('result').innerText = password;
+    }
+
+    function copyPassword() {
+        const text = document.getElementById('result').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("पासवर्ड कॉपी हो गया! ✅");
+        });
+    }
+</script>
+
 </body>
-</html> 
+</html>
